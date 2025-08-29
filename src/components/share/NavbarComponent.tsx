@@ -108,12 +108,12 @@ const NavbarComponent = () => {
                 </Link>
               </li>
               <li className="max-lg:border-b max-lg:border-gray-300 max-lg:py-3 px-3">
-                <a
-                  href="javascript:void(0)"
+                <Link
+                  href="/products"
                   className="hover:text-blue-700 text-slate-900 font-medium block text-base"
                 >
-                  Contact
-                </a>
+                  Products
+                </Link>
               </li>
             </ul>
           </div>
