@@ -1,9 +1,10 @@
+import LoginForm from "@/components/share/LoginForm";
 import React from "react";
 
 const LoignPage = async () => {
   return (
     <React.Fragment>
-      <main>LoignPage</main>
+      <LoginForm />
     </React.Fragment>
   );
 };

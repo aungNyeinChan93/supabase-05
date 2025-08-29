@@ -1,8 +1,12 @@
 "use client";
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @next/next/no-img-element */
+
+// import { supabase } from "@/config/supabase";
+import { logoutAction } from "@/actions/all-actions";
 import { useAppUtilsContext } from "@/context/AppUtilsProvider";
-import React, { useState } from "react";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
 
 const NavbarComponent = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -11,8 +15,28 @@ const NavbarComponent = () => {
     setMenuOpen((prev) => !prev);
   };
 
-  const { isLogin, setIsLogin, theme, setTheme } = useAppUtilsContext();
-  console.log({ isLogin, theme });
+  const { isLogin, setIsLogin, theme, setTheme, session, setSession } =
+    useAppUtilsContext();
+  console.log({ isLogin, theme, session });
+
+  // useEffect(() => {
+  //   const callSession = async () => {
+  //     const { data: sessionData, error: sessionError } =
+  //       await supabase.auth.getSession();
+  //     if (sessionError instanceof Error) {
+  //       console.error(sessionError?.message);
+  //     }
+  //     setSession(sessionData?.session ?? null);
+  //     localStorage.setItem("supabaseSession", JSON.stringify(sessionData));
+  //   };
+  //   callSession();
+  // }, []);
+
+  // console.log({ session });
+
+  console.log({ session });
+  const isAuthenticate: boolean =
+    session && session?.user?.role === "authenticated" ? true : false;
 
   return (
     <>
@@ -68,20 +92,20 @@ const NavbarComponent = () => {
                 </a>
               </li>
               <li className="max-lg:border-b max-lg:border-gray-300 max-lg:py-3 px-3">
-                <a
-                  href="javascript:void(0)"
+                <Link
+                  href="/"
                   className="hover:text-blue-700 text-blue-700 font-medium block text-base"
                 >
                   Home
-                </a>
+                </Link>
               </li>
               <li className="max-lg:border-b max-lg:border-gray-300 max-lg:py-3 px-3">
-                <a
-                  href="javascript:void(0)"
+                <Link
+                  href="/tests/demo-one"
                   className="hover:text-blue-700 text-slate-900 font-medium block text-base"
                 >
-                  About
-                </a>
+                  Tests
+                </Link>
               </li>
               <li className="max-lg:border-b max-lg:border-gray-300 max-lg:py-3 px-3">
                 <a
@@ -95,23 +119,67 @@ const NavbarComponent = () => {
           </div>
 
           <div className="flex items-center max-lg:ml-auto space-x-4">
-            <button
-              type="button"
-              className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white text-[15px] font-medium flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                className="cursor-pointer fill-white inline w-4 h-4"
-              >
-                <circle cx="10" cy="7" r="6" data-original="#000000" />
-                <path
-                  d="M14 15H6a5 5 0 0 0-5 5 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 5 5 0 0 0-5-5zm8-4h-2.59l.3-.29a1 1 0 0 0-1.42-1.42l-2 2a1 1 0 0 0 0 1.42l2 2a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42l-.3-.29H22a1 1 0 0 0 0-2z"
-                  data-original="#000000"
-                />
-              </svg>
-              Login
-            </button>
+            {!isAuthenticate && (
+              <>
+                <Link
+                  href={"/auth/login"}
+                  type="button"
+                  className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white text-[15px] font-medium flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    className="cursor-pointer fill-white inline w-4 h-4"
+                  >
+                    <circle cx="10" cy="7" r="6" data-original="#000000" />
+                    <path
+                      d="M14 15H6a5 5 0 0 0-5 5 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 5 5 0 0 0-5-5zm8-4h-2.59l.3-.29a1 1 0 0 0-1.42-1.42l-2 2a1 1 0 0 0 0 1.42l2 2a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42l-.3-.29H22a1 1 0 0 0 0-2z"
+                      data-original="#000000"
+                    />
+                  </svg>
+                  Login
+                </Link>
+                <Link
+                  href={"/auth/register"}
+                  type="button"
+                  className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white text-[15px] font-medium flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    className="cursor-pointer fill-white inline w-4 h-4"
+                  >
+                    <circle cx="10" cy="7" r="6" data-original="#000000" />
+                    <path
+                      d="M14 15H6a5 5 0 0 0-5 5 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 5 5 0 0 0-5-5zm8-4h-2.59l.3-.29a1 1 0 0 0-1.42-1.42l-2 2a1 1 0 0 0 0 1.42l2 2a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42l-.3-.29H22a1 1 0 0 0 0-2z"
+                      data-original="#000000"
+                    />
+                  </svg>
+                  Register
+                </Link>
+              </>
+            )}
+
+            {/* logout */}
+            {isAuthenticate && (
+              <>
+                <form
+                  action={async () => {
+                    // "use server";
+                    await logoutAction();
+                    setSession(null);
+                    localStorage.removeItem("supabaseSession");
+                  }}
+                >
+                  <button
+                    type="submit"
+                    className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white text-[15px] font-medium flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    Logout
+                  </button>
+                </form>
+              </>
+            )}
 
             <>
               {/* test */}

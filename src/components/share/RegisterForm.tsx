@@ -2,8 +2,11 @@
 import React, { useState } from "react";
 import { Github, Mail } from "lucide-react";
 import { supabase } from "@/config/supabase";
+import { useAppUtilsContext } from "@/context/AppUtilsProvider";
+import { useRouter } from "next/navigation";
 
 export default function RegisterForm() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -14,23 +17,34 @@ export default function RegisterForm() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Register data:", formData);
     // 🔗 Call your API here
+    const { data: user, error } = await supabase.auth.signUp({
+      email: formData.email,
+      password: formData.password,
+    });
+    if (error instanceof Error) {
+      console.error(error?.message);
+    }
+    console.log({ user });
+    router.push("/auth/login");
   };
+
+  const { setSession } = useAppUtilsContext();
 
   // SocialLogin
   const handleSocialLogin = async (provider: "github" | "google") => {
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { error, data } = await supabase.auth.signInWithOAuth({
       provider,
-      options: {
-        redirectTo: `${window.location.origin}/auth/login`,
-      },
     });
     if (error instanceof Error) {
       console.log(error?.message);
     }
+    setSession(data);
+    localStorage.setItem("session", JSON.stringify(data));
+    return router.push("/");
   };
 
   return (
