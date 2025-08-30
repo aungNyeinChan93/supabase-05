@@ -2,6 +2,8 @@ import { supabase } from "@/config/supabase";
 import { NextRequest, NextResponse } from "next/server";
 
 
+export const runtime = 'edge'  // use edge runtime -> more fast 
+
 // create posts
 /**
  * Handles POST requests to create a new product.
@@ -56,7 +58,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
  */
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
-    const searchParams = request.nextUrl.searchParams;
+    const { searchParams } = request.nextUrl;
     const limit = searchParams.get('limit');
 
     const { data: products, error } = await supabase.from('db5_products')

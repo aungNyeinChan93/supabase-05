@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 
 interface Props {
   searchParams: Promise<{
@@ -19,11 +19,11 @@ const TestProducts = async ({ searchParams }: Props) => {
     }
   ).then((res) => res.json());
   return (
-    <React.Fragment>
+    <Fragment>
       <main>
         <pre>{JSON.stringify(products, null, 2)}</pre>
       </main>
-    </React.Fragment>
+    </Fragment>
   );
 };
 
