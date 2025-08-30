@@ -23,6 +23,7 @@ export default function ProductCreateForm() {
     product_image: null as File | null,
   });
 
+  // onChange Event
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -34,17 +35,17 @@ export default function ProductCreateForm() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Product data:", formData);
 
-    const payload = new FormData();
-    payload.append("title", formData.title);
-    payload.append("price", formData.price);
-    payload.append("description", formData.description);
-    if (formData.product_image) {
-      payload.append("product_image", formData.product_image);
-    }
+    // GIVE FORM DATA
+    // const payload = new FormData();
+    // payload.append("title", formData.title);
+    // payload.append("price", formData.price);
+    // payload.append("description", formData.description);
+    // if (formData.product_image) {
+    //   payload.append("product_image", formData.product_image);
+    // }
 
     let public_imgUrl = formData.product_image || "";
 
@@ -66,13 +67,11 @@ export default function ProductCreateForm() {
     const { data, error } = await supabase
       .from("db5_products")
       .insert({
-        title: formData.title,
-        price: formData.price,
-        description: formData.description,
+        ...formData,
         product_image: public_imgUrl,
       })
       .select()
-      .single(); // Ensures returned data is typed and contains inserted rows
+      .single();
 
     if (error instanceof Error) {
       return toast.error(error.message, { duration: 2000 });
