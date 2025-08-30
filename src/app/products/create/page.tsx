@@ -29,7 +29,7 @@ export default function ProductCreateForm() {
   ) => {
     const { name, value, files } = e.target as HTMLInputElement;
     if (name === "product_image" && files) {
-      setFormData({ ...formData, product_image: files[0] });
+      setFormData({ ...formData, [name]: files[0] });
     } else {
       setFormData({ ...formData, [name]: value });
     }

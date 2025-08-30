@@ -3,7 +3,13 @@ import { NextRequest, NextResponse } from "next/server";
 
 
 // create posts
-export async function POST(request: NextRequest) {
+/**
+ * Handles POST requests to create a new product.
+ * @param request The incoming Next.js request object.
+ * @param {FormData<any>} 
+ * @returns {Promise<NextResponse> |Promise<Error>} The response with the created product or an error.
+ */
+export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const formData = await request.formData();
 
@@ -29,8 +35,6 @@ export async function POST(request: NextRequest) {
         image_url = supabase.storage.from('db5_product-images').getPublicUrl(fileName).data.publicUrl || ''
     };
 
-
-
     const { data: products, error, status } = await supabase.from('db5_products')
         .insert({ title, description, price, product_image: image_url })
         .select()
@@ -43,4 +47,32 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ products }, { status: 201 })
 }
+
+
+// GET PRODUCTS
+/**
+ * @param request
+ * @return {Promise<NextResponse>}
+ */
+
+export async function GET(request: NextRequest): Promise<NextResponse> {
+    const searchParams = request.nextUrl.searchParams;
+    const limit = searchParams.get('limit');
+
+    const { data: products, error } = await supabase.from('db5_products')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(Number(limit) || 10)
+
+    if (error instanceof Error) {
+        return NextResponse.json({ message: error?.message }, { status: 404 })
+    }
+
+    return NextResponse.json({ products, total: products?.length }, {
+        status: 200, headers: {
+            'Cotent-Type': 'application/json'
+        }
+    })
+}
+
 
